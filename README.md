@@ -1,38 +1,36 @@
-# HEIC to PDF Online Tool
+# Flux Kontext Image Generator
 
-This project is a pure front-end HEIC to PDF online tool based on Next.js, supporting batch conversion, PDF merging, privacy-friendly local processing, and other advanced features. All image processing is done locally in the browser—no upload, no registration, and always free.
+This project is an advanced AI image generation tool that combines text understanding and visual design to automatically generate high-quality images suitable for your input context, all powered by the cutting-edge Flux.1 Kontext AI. We are committed to providing you with a powerful, intuitive creative platform that helps you easily realize your visual ideas.
 
-## Features
+## Key Features
 
-- **HEIC to PDF/JPEG**: Supports batch conversion of HEIC images from Apple devices to PDF or JPEG formats.
-- **Batch Processing**: Upload and convert multiple HEIC files at once, with no limit on quantity or size.
-- **PDF Merging**: Choose to merge multiple images into a single multi-page PDF, or export each as separate PDF files.
-- **Advanced Settings**: Customize image size, page size (A4, Letter, original), cropping/scaling, metadata removal, and more.
-- **Privacy & Security**: All conversion and processing are done locally in your browser. Images are never uploaded to any server, ensuring user privacy.
-- **Cross-Platform Compatibility**: Works on Windows, macOS, Linux, and all major browsers and mobile devices.
-- **No Installation/Registration Required**: Ready to use instantly, with no ads, no watermarks, and no feature restrictions.
+- **AI-Powered Image Generation**: Automatically generate high-quality images from text descriptions based on Flux.1 Kontext AI.
+- **Integration of Text Understanding and Visual Design**: Deeply understands your text input and transforms it into creative and contextually relevant visual works.
+- **Fast and Efficient**: Optimized image generation process, providing instant responses and quick image output.
+- **User-Friendly Interface**: Easy to get started even without design experience, creating stunning images through an intuitive interface.
+- **Continuous Optimization and Updates**: We continuously improve our AI models and features to bring you the latest image generation technology.
 
 ## Quick Start
 
-1. Open the homepage and click "Upload Files" or drag HEIC images into the conversion area.
-2. You can continue adding more images for batch conversion.
-3. To merge into a single PDF, check the "Merge PDF" option.
-4. Click "Convert" and the PDF file(s) will be automatically downloaded locally.
+1.  Open the homepage and enter the text description of the image you want to generate in the specified area.
+2.  Click the "Generate" button, wait for the AI to process, and preview the generated image.
+3.  You can adjust the description or parameters as needed and generate again to get more satisfactory results.
+4.  Download your favorite image.
 
 ## Advanced Usage
 
-- Use "Advanced Settings" to adjust page size, image scaling, whether to keep metadata, and more.
-- Supports batch conversion and merging, suitable for photographers, designers, enterprise users, and other large-scale image processing scenarios.
-- All processing is done locally, ideal for users with high privacy requirements.
+- Explore different text descriptions and style prompts to generate diverse image styles.
+- Utilize advanced settings that may be added in the future, such as image ratio, resolution, etc., for more precise control.
+- Suitable for various creative scenarios such as marketing materials, art creation, content illustration, product prototyping, and more.
 
 ## FAQ
 
-- **What files are supported?** Only .heic images are supported, with a maximum size of 10MB per file.
-- **Can the converted PDF be edited?** Yes, the exported PDF can be opened and edited with any standard PDF editor.
-- **Is mobile supported?** Yes, works on iOS, Android, and all modern browsers.
-- **How is the image quality?** Original image quality is preserved by default, and can be adjusted in advanced settings.
-
-For more questions, please refer to the [User Guide](/how-to-use) and [FAQ](/faq).
+- **How does the Flux Kontext Image Generator work?**
+  You enter a text description, and our Flux.1 Kontext AI model understands your intent based on your description and generates corresponding images.
+- **Are there any quantity or size limits for generated images?**
+  Currently, we are committed to providing an unlimited creative experience. Please refer to the latest version notes for specific policies.
+- **Can I use the generated images for commercial purposes?**
+  Please refer to our terms of use for commercial use licenses and copyright information for generated images.
 
 ## Tech Stack
 
@@ -40,8 +38,7 @@ For more questions, please refer to the [User Guide](/how-to-use) and [FAQ](/faq
 - React 19
 - TypeScript
 - Tailwind CSS
-- heic2any (HEIC conversion)
-- jsPDF (PDF generation)
+- Flux.1 Kontext AI (Core Image Generation Technology)
 
 ## Local Development
 

@@ -1,6 +1,6 @@
-import HeicConverter from "@/components/HeicConverter";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import Chat from "@/components/Chat";
 
 export default function Home() {
   return (
@@ -10,109 +10,113 @@ export default function Home() {
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="max-w-3xl mx-auto">
           <h1 className="text-3xl font-bold text-center mb-2">
-            The Ultimate HEIC to PDF Converter Online
+            Flux Kontext Smart Image Editor: Your AI Creative Partner
           </h1>
           <p className="text-center mb-8 text-gray-600">
-            Instantly convert HEIC images to PDF with our advanced,
-            privacy-first online tool. No uploads, no registration, no
-            limits—just fast, secure, and high-quality HEIC to PDF conversion in
-            your browser. Perfect for individuals, professionals, and teams.
+            Upload your images, engage in smart conversations with the Flux
+            Kontext Pro AI model to precisely edit images according to your
+            needs, and get new images ready for commercial use. Your creativity,
+            powered by AI.
           </p>
 
-          <HeicConverter />
+          {/* This will be the new image editing feature area */}
+          <Chat />
 
           <div className="mt-12">
             <h2 className="text-xl font-bold mb-4">
-              Who Can Benefit from HEIC to PDF Conversion?
+              What can Flux Kontext Smart Image Editor do for you?
             </h2>
             <p className="mb-6 text-gray-700">
-              Our HEIC to PDF tool is perfect for students submitting
-              assignments, business professionals sharing reports, designers
-              preparing print files, and anyone who needs to make Apple device
-              photos universally accessible. Whether you're working with a
-              single image or an entire photo library, our converter adapts to
-              your workflow.
+              Whether you're a designer, marketer, content creator, or a general
+              user, Flux Kontext Smart Image Editor can help you. From simple
+              touch-ups to complex element replacements, our AI tool can quickly
+              and accurately edit images according to your instructions, giving
+              your visual content a fresh look.
             </p>
             <h2 className="text-xl font-bold mb-4">
-              Cutting-Edge Technology for HEIC to PDF
+              Cutting-edge AI Technology, Unlimited Creativity
             </h2>
             <p className="mb-6 text-gray-700">
-              Powered by the latest browser-based image processing technology,
-              our HEIC to PDF converter delivers instant results without
-              uploading your files to any server. Enjoy lightning-fast
-              conversion, robust privacy, and compatibility with all major
-              operating systems and browsers.
+              Flux Kontext Smart Image Editor is powered by the robust Flux.1
+              Kontext Pro AI model. We are committed to providing exceptional
+              editing performance, allowing you to achieve complex image
+              operations through natural language descriptions and unleash your
+              limitless creative potential.
             </p>
             <h2 className="text-xl font-bold mb-4">
-              Eco-Friendly & Privacy-First
+              Simple Operation, Stunning Results
             </h2>
             <p className="mb-6 text-gray-700">
-              By processing everything locally, our HEIC to PDF tool reduces
-              energy consumption and carbon footprint compared to cloud-based
-              converters. Your data never leaves your device, ensuring full
-              compliance with privacy regulations worldwide.
-            </p>
-            <h2 className="text-xl font-bold mb-4">Always Improving</h2>
-            <p className="mb-6 text-gray-700">
-              We are committed to providing the best HEIC to PDF experience. New
-              features, format support, and performance improvements are
-              released regularly. Bookmark this page for the latest and most
-              reliable HEIC to PDF conversion.
+              No professional skills required. Simply upload your image, then
+              chat with the AI and tell it your editing needs. Flux Kontext
+              Smart Image Editor will then present you with amazing editing
+              effects. We provide an intuitive user interface, allowing you to
+              easily manage and download your edited images.
             </p>
             <h2 className="text-xl font-bold mb-4">
-              Why Choose Us Over Other HEIC to PDF Tools?
+              Generated Images are for Commercial Use
             </h2>
             <p className="mb-6 text-gray-700">
-              Unlike many online converters, we never upload your files, never
-              require registration, and never limit your usage. Our HEIC to PDF
-              tool is 100% free, ad-free, and trusted by users worldwide.
+              All images generated or edited with Flux Kontext Smart Image
+              Editor can be used for commercial purposes without additional
+              authorization. You can confidently apply them to your marketing,
+              design, product display, and various other commercial scenarios.
             </p>
-            <h2 className="text-xl font-bold mb-6">
-              Why Choose Our HEIC to PDF Tool?
+            <h2 className="text-xl font-bold mb-4">
+              Continuous Innovation, Serving You
+            </h2>
+            <p className="mb-6 text-gray-700">
+              We are always committed to improving Flux Kontext Smart Image
+              Editor, continuously introducing new features and optimizing model
+              performance. Bookmark this page to always get the latest and most
+              powerful AI image editing experience.
+            </p>
+            <h2 className="text-xl font-bold mb-4">
+              Why Choose Flux Kontext Smart Image Editor?
             </h2>
             <ul className="list-disc list-inside mb-8 space-y-2 text-gray-700">
-              <li>100% free and unlimited HEIC to PDF conversion</li>
               <li>
-                All processing is local—your images never leave your device
-              </li>
-              <li>Batch convert multiple HEIC files to PDF in one click</li>
-              <li>Merge images into a single PDF or export separate files</li>
-              <li>
-                Preserves original image quality, supports advanced settings
+                Intelligent conversational editing based on Flux.1 Kontext Pro
+                AI model
               </li>
               <li>
-                No software installation, works on all platforms and browsers
+                Upload images and make precise modifications via chat commands
               </li>
+              <li>Quickly and efficiently complete complex image operations</li>
+              <li>Generated images can be used for commercial purposes</li>
+              <li>Continuously updated, powerful features</li>
             </ul>
             <h2 className="text-xl font-bold mb-4">
-              HEIC to PDF: Fast, Private, Reliable
+              Frequently Asked Questions
             </h2>
-            <p className="mb-6 text-gray-700">
-              Our HEIC to PDF converter is trusted by thousands of users
-              worldwide. Whether you need to archive, share, or print your Apple
-              device photos, our tool delivers professional results every time.
-            </p>
-            <h2 className="text-xl font-bold mb-4">Quick FAQ</h2>
             <div className="space-y-4 mb-8">
               <div>
-                <h3 className="font-bold">Is my data safe?</h3>
+                <h3 className="font-bold">
+                  How does Flux Kontext Smart Image Editor work?
+                </h3>
                 <p className="text-gray-700">
-                  Yes, all HEIC to PDF conversion happens in your browser. No
-                  uploads, no tracking, total privacy.
+                  You upload an image, then communicate your editing needs to
+                  the AI model through text conversation, and the model will
+                  edit the image according to your instructions.
                 </p>
               </div>
               <div>
-                <h3 className="font-bold">Are there any limits?</h3>
+                <h3 className="font-bold">
+                  Can edited images be used for commercial purposes?
+                </h3>
                 <p className="text-gray-700">
-                  No file size or number limits. Convert as many HEIC images to
-                  PDF as you need.
+                  Yes, all images generated or edited with Flux Kontext Smart
+                  Image Editor can be used for commercial purposes.
                 </p>
               </div>
               <div>
-                <h3 className="font-bold">Will I lose image quality?</h3>
+                <h3 className="font-bold">
+                  Do I need professional image editing skills?
+                </h3>
                 <p className="text-gray-700">
-                  No, our HEIC to PDF tool preserves the original quality of
-                  your images.
+                  No. Our tool is designed to help you edit images through
+                  natural language conversations, without requiring complex
+                  professional skills.
                 </p>
               </div>
             </div>

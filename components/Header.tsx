@@ -5,12 +5,14 @@ const Header = () => {
         href="/"
         className="container mx-auto px-4 flex justify-start gap-4 items-center"
       >
-        <img
+        {/* <img
           src="/favicon.svg"
           alt="heic to pdf online converter"
           className="w-10 h-10"
-        />
-        <div className="text-xl font-bold">HEIC to PDF</div>
+        /> */}
+        <a href="/" className="text-2xl font-bold text-gray-800">
+          Flux Kontext Smart Image Editor
+        </a>
       </a>
     </header>
   );

@@ -3,13 +3,14 @@ import "./globals.css";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 
 export const metadata: Metadata = {
-  title: "HEIC to PDF Converter | Free, Secure & Local Batch Conversion Online",
+  title:
+    "Flux Kontext Smart Image Editor - AI Conversational Image Editing Tool",
   description:
-    "Easily convert HEIC images to PDF in your browser. 100% free, no uploads, privacy protected, batch processing, and high-quality output. Works on all devices.",
+    "Upload images, engage in smart conversations with the Flux Kontext Pro AI model to precisely edit images according to your needs, and get new images ready for commercial use. Your creativity, powered by AI.",
   keywords:
-    "HEIC to PDF, batch HEIC converter, online HEIC to PDF, privacy safe HEIC conversion, local HEIC to PDF, free HEIC converter, secure image conversion",
+    "AI image editing, Flux Kontext Pro, AI image modification, conversational image editing, online image editor, smart photo editing, commercial-use images, AI image processing",
   alternates: {
-    canonical: "https://heictopdf.tech/",
+    canonical: "https://fluxkontext.tech/",
   },
 };
 
@@ -21,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        {/* <link rel="icon" type="image/svg+xml" href="/favicon.svg" /> */}
       </head>
       <body>
         {children}

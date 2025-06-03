@@ -1,114 +1,129 @@
-export const runtime = "edge";
-
-import Footer from "@/components/Footer";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "HEIC to PDF FAQ - Advanced Questions & Support",
+  title:
+    "Flux Kontext Smart Image Editor: FAQ - AI Conversational Image Editing",
   description:
-    "Expert answers to advanced questions about HEIC to PDF conversion: metadata, editing, compatibility, privacy, and more. Get the most out of your heic to pdf workflow.",
+    "Frequently asked questions about Flux Kontext Smart Image Editor. Learn about image uploading, AI conversational editing process, commercial use of images, and more.",
   keywords:
-    "heic to pdf, heic to pdf faq, advanced heic to pdf, heic metadata, heic to pdf editing, privacy, compatibility",
+    "Flux Kontext FAQ, AI image editing FAQ, image editing AI, commercial use images, AI conversational photo editing",
   alternates: {
-    canonical: "https://heictopdf.tech/faq/",
+    canonical: "https://fluxkontext.tech/faq/",
   },
 };
 
-export default function FAQ() {
+export default function FAQPage() {
   return (
-    <>
+    <div className="flex flex-col min-h-screen bg-white text-gray-800">
       <Header />
-      <main className="max-w-3xl mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-4 text-center">
-          HEIC to PDF – Advanced FAQ
-        </h1>
-        <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-2">
-            Expert Answers for HEIC to PDF Users
-          </h2>
-          <p className="text-gray-700 mb-2">
-            Explore advanced topics and troubleshooting for heic to pdf
-            conversion. For basic usage, see our How-To page.
+
+      <main className="flex-grow container mx-auto px-4 py-8">
+        <div className="max-w-3xl mx-auto">
+          <h1 className="text-3xl font-bold text-center mb-2">
+            Flux Kontext Smart Image Editor: Frequently Asked Questions
+          </h1>
+          <p className="text-center mb-8 text-gray-600">
+            You might have some questions when using Flux Kontext Smart Image
+            Editor. We have compiled common questions and their answers here,
+            hoping to help you make better use of our tool.
           </p>
-          <div className="mb-6">
-            <h3 className="font-bold mt-4">
-              Can I edit the PDF after converting from HEIC?
-            </h3>
-            <p className="text-gray-700">
-              Yes, the PDF output from our heic to pdf tool can be opened and
-              edited in any standard PDF editor.
-            </p>
+
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-xl font-bold mb-2">
+                What is Flux Kontext Smart Image Editor?
+              </h2>
+              <p className="text-gray-700">
+                Flux Kontext Smart Image Editor is a tool powered by the
+                cutting-edge Flux.1 Kontext Pro AI model, which allows users to
+                upload images and then communicate editing needs to the AI
+                through smart conversations. The AI model precisely modifies
+                images according to instructions and returns new images.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="text-xl font-bold mb-2">
+                Can edited images be used for commercial purposes?
+              </h2>
+              <p className="text-gray-700">
+                Yes, all images generated or edited with Flux Kontext Smart
+                Image Editor can be used for commercial purposes without
+                additional authorization. You can confidently apply them to your
+                marketing, design, product display, and various other commercial
+                scenarios.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="text-xl font-bold mb-2">
+                How to ensure AI understands my editing needs?
+              </h2>
+              <p className="text-gray-700">
+                AI's understanding depends on the text description you provide.
+                Please be as specific and clear as possible when describing your
+                editing requirements, including the objects to be modified,
+                desired effects, styles, etc. If the first attempt is not ideal,
+                you can try more detailed or different descriptions.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="text-xl font-bold mb-2">
+                Do I need professional image editing skills?
+              </h2>
+              <p className="text-gray-700">
+                No, not at all. Flux Kontext Smart Image Editor is designed to
+                help you edit images through natural language conversations,
+                without requiring complex image editing software knowledge or
+                professional skills. You only need to describe it in words.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="text-xl font-bold mb-2">
+                Is my image data secure?
+              </h2>
+              <p className="text-gray-700">
+                We attach great importance to user privacy and data security.
+                Regarding the processing and storage of image data, please refer
+                to our privacy policy, which will detail how we protect your
+                information.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="text-xl font-bold mb-2">
+                Are there any quantity or size limits for generating or editing
+                images?
+              </h2>
+              <p className="text-gray-700">
+                Currently, we are committed to providing users with a flexible
+                editing experience. For specific image size or quantity limits,
+                please refer to our latest service description or contact
+                customer service directly for detailed information.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="text-xl font-bold mb-2">
+                How should I report issues or provide feedback?
+              </h2>
+              <p className="text-gray-700">
+                We highly value user feedback. If you encounter any problems
+                during use, have suggestions for improvement, or want to share
+                your creations, please contact us through the contact
+                information on our website (e.g., email, community forum, etc.).
+                Your feedback is crucial for our continuous improvement.
+              </p>
+            </div>
           </div>
-          <div className="mb-6">
-            <h3 className="font-bold mt-4">
-              Does HEIC to PDF conversion keep EXIF or metadata?
-            </h3>
-            <p className="text-gray-700">
-              By default, sensitive metadata is removed for privacy, but you can
-              choose to retain it in advanced settings.
-            </p>
-          </div>
-          <div className="mb-6">
-            <h3 className="font-bold mt-4">
-              What if my PDF looks different from the original HEIC?
-            </h3>
-            <p className="text-gray-700">
-              Check your export settings for page size, scaling, and cropping.
-              Our heic to pdf converter offers multiple options to match your
-              needs.
-            </p>
-          </div>
-          <div className="mb-6">
-            <h3 className="font-bold mt-4">
-              Can I convert HEIC to PDF on mobile devices?
-            </h3>
-            <p className="text-gray-700">
-              Yes, our heic to pdf tool works on iOS, Android, and all modern
-              browsers—no app required.
-            </p>
-          </div>
-          <div className="mb-6">
-            <h3 className="font-bold mt-4">
-              Is batch conversion or PDF merging supported?
-            </h3>
-            <p className="text-gray-700">
-              Absolutely. You can batch convert and merge multiple HEIC images
-              into a single PDF or export them separately.
-            </p>
-          </div>
-          <div className="mb-6">
-            <h3 className="font-bold mt-4">
-              Can I automate heic to pdf conversion for large workflows?
-            </h3>
-            <p className="text-gray-700">
-              For power users, our tool supports drag-and-drop batch processing.
-              For API or automation, please contact us for enterprise solutions.
-            </p>
-          </div>
-          <div className="mb-6">
-            <h3 className="font-bold mt-4">
-              What about color profiles and print quality?
-            </h3>
-            <p className="text-gray-700">
-              Our converter preserves color accuracy for both digital and
-              print-ready PDFs. For best results, use high-resolution HEIC
-              files.
-            </p>
-          </div>
-        </section>
-        <section>
-          <h2 className="text-xl font-semibold mb-2">Need More Help?</h2>
-          <p className="text-gray-700">
-            For step-by-step instructions, visit the{" "}
-            <a href="/how-to-use" className="text-blue-600 underline">
-              How to Use HEIC to PDF
-            </a>{" "}
-            page, or contact our support team.
-          </p>
-        </section>
+        </div>
       </main>
+
       <Footer />
-    </>
+    </div>
   );
 }

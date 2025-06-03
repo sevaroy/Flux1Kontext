@@ -1,5 +1,5 @@
-name = "heic2pdf"
-compatibility_date = "2025-05-30"
+name = "fluxkontext"
+compatibility_date = "2025-06-04"
 compatibility_flags = ["nodejs_compat"]
 pages_build_output_dir = ".vercel/output/static"
 

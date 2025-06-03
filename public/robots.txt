@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://heictopdf.tech/sitemap.xml 
+Sitemap: https://fluxkontext.tech/sitemap.xml 

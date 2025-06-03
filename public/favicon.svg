@@ -1,12 +1,12 @@
 <svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="200" height="200" rx="28" fill="#6366f1"/>
-  <text x="15" y="70" font-family="Arial Black, Arial, sans-serif" font-size="56" fill="white" font-weight="bold">
-    heic
-  </text>
-  <text x="80" y="115" font-family="Arial Black, Arial, sans-serif" font-size="36" fill="white" font-weight="bold">
-    to
-  </text>
-  <text x="85" y="165" font-family="Arial Black, Arial, sans-serif" font-size="56" fill="white" font-weight="bold">
-    pdf
-  </text>
+  <rect width="200" height="200" rx="28" fill="url(#paint0_linear)"/>
+  <defs>
+    <linearGradient id="paint0_linear" x1="0" y1="0" x2="200" y2="200" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#e04f0c"/>
+      <stop offset="1" stop-color="#f47020"/>
+    </linearGradient>
+  </defs>
+  <path d="M50 70 C 70 50, 130 50, 150 70 C 130 90, 70 90, 50 70 M50 110 C 70 130, 130 130, 150 110 C 130 90, 70 90, 50 110Z" fill="white" opacity="0.8"/>
+  <path d="M70 60 L100 90 L70 120 L40 90 L70 60Z" fill="white" opacity="0.5"/>
+  <path d="M130 60 L160 90 L130 120 L100 90 L130 60Z" fill="white" opacity="0.5"/>
 </svg>

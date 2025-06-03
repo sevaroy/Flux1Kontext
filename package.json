@@ -12,12 +12,11 @@
     "deploy": "pnpm pages:build && wrangler pages deploy"
   },
   "dependencies": {
-    "heic2any": "^0.0.4",
-    "jspdf": "^3.0.1",
     "next": "15.3.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-dropzone": "^14.3.8"
+    "react-dropzone": "^14.3.8",
+    "replicate": "^1.0.1"
   },
   "devDependencies": {
     "@cloudflare/next-on-pages": "^1.13.12",
