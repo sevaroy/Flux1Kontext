@@ -1,32 +1,14 @@
 "use client";
 
-import React, { useRef, useState, useEffect } from "react";
-
-// Define message types
-interface ImageMessage {
-  type: "image";
-  image: string;
-  imageBlob: Blob;
-  from: "assistant";
-  id: number;
-  showDelete?: boolean;
-}
-
-interface TextMessage {
-  type: "text";
-  text: string;
-  from: "user" | "system" | "assistant";
-  id: number;
-  showDelete?: boolean;
-}
-
-interface LoadingMessage {
-  type: "loading";
-  from: "assistant";
-  id: number;
-}
-
-type Message = ImageMessage | TextMessage | LoadingMessage;
+import React, { useState, useEffect } from "react";
+import UploadSection from "./UploadSection";
+import ChatSection from "./ChatSection";
+import { ImageMessage, TextMessage, LoadingMessage, Message } from "./types";
+import { useImageUpload } from "./hooks/useImageUpload";
+import { useChatCore } from "./hooks/useChatCore";
+import { useImageActions } from "./hooks/useImageActions";
+import { useDesktopDetection } from "./hooks/useDesktopDetection";
+import { useBodyScrollLock } from "./hooks/useBodyScrollLock";
 
 const starterImages = [
   {
@@ -58,470 +40,74 @@ const starterImages = [
 ];
 
 function App() {
-  // State for upload vs chat mode
   const [showUpload, setShowUpload] = useState(true);
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(false);
-  // No need for separate image state - just use what's in the chat!
-  const [predictionId, setPredictionId] = useState<string | null>(null);
-  const [abortController, setAbortController] =
-    useState<AbortController | null>(null);
-  // New: track if a starter image was used (for future logic if needed)
   const [starterUsed, setStarterUsed] = useState(false);
+  const [hoveredImageId, setHoveredImageId] = useState<number | null>(null);
 
-  // Simple desktop check
-  const [isDesktop, setIsDesktop] = useState(false);
-  useEffect(() => {
-    const checkDesktop = () => setIsDesktop(window.innerWidth >= 768);
-    checkDesktop();
-    window.addEventListener("resize", checkDesktop);
-    return () => window.removeEventListener("resize", checkDesktop);
-  }, []);
+  const isDesktop = useDesktopDetection();
+  useBodyScrollLock(isDesktop);
 
-  // Ref for chat container and file input
-  const chatContainerRef = useRef<HTMLDivElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const {
+    messages,
+    setMessages,
+    input,
+    setInput,
+    loading,
+    setLoading,
+    imageVersions,
+    setImageVersions,
+    selectedImage,
+    setSelectedImage,
+    handleSend,
+    cancelGeneration,
+    resetAll: resetChatCore,
+  } = useChatCore();
 
-  // Scroll to bottom when messages change
-  useEffect(() => {
-    const chatContainer = chatContainerRef.current;
-    if (chatContainer) {
-      setTimeout(() => {
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-      }, 50);
-    }
-  }, [messages]);
+  const {
+    fileInputRef,
+    handleFileSelect,
+    handleStarterImageClick,
+    handleDrag,
+    handleDrop,
+    dragActive,
+    resetFileInput,
+  } = useImageUpload({
+    setMessages,
+    setImageVersions,
+    setSelectedImage,
+    setShowUpload,
+    setInput,
+    setStarterUsed,
+    setLoading,
+  });
 
-  // Lock body scrolling on mobile for a consistent experience across screens
-  useEffect(() => {
-    if (!isDesktop) {
-      document.body.style.overflow = "hidden";
-      document.body.style.position = "fixed";
-      document.body.style.width = "100%";
-    } else {
-      document.body.style.overflow = "";
-      document.body.style.position = "";
-      document.body.style.width = "";
-    }
+  const { handleImageClick, handleDownloadImage, handleCopyImage } =
+    useImageActions();
 
-    return () => {
-      document.body.style.overflow = "";
-      document.body.style.position = "";
-      document.body.style.width = "";
-    };
-  }, [isDesktop]);
+  // Combined reset function for App component specific states
+  const resetAppState = () => {
+    setShowUpload(true);
+    setStarterUsed(false);
+    setHoveredImageId(null);
+    resetFileInput(); // Reset the file input field
+  };
 
-  // Drag and drop state
-  const [dragActive, setDragActive] = useState(false);
+  // Override the resetAll from useChatCore to include app state reset
+  const fullReset = () => {
+    resetChatCore(); // Resets all states managed by useChatCore
+    resetAppState(); // Resets states managed by App component
+  };
 
   // Helper to scroll to bottom (for image onLoad)
   function scrollToBottom() {
-    const chatContainer = chatContainerRef.current;
-    if (chatContainer) {
-      setTimeout(() => {
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-      }, 50);
-    }
-  }
-
-  // Drag and drop handlers for upload area
-  function handleDrag(e: DragEvent) {
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") {
-      setDragActive(true);
-    } else if (e.type === "dragleave") {
-      setDragActive(false);
-    }
-  }
-
-  function handleDrop(e: DragEvent) {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-    const files = e.dataTransfer?.files;
-    if (files && files[0] && files[0].type.startsWith("image/")) {
-      handleFile(files[0]);
-    }
-  }
-
-  // Handle file selection
-  function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (file) {
-      handleFile(file);
-    }
-  }
-
-  // Process uploaded file
-  async function handleFile(file: File) {
-    if (!file.type.startsWith("image/")) {
-      alert("Please select a valid image file.");
-      return;
-    }
-
-    // Validate file size (10MB limit)
-    const maxSize = 10 * 1024 * 1024;
-    if (file.size > maxSize) {
-      alert("Image file is too large. Please select an image under 10MB.");
-      return;
-    }
-
-    try {
-      // Scale down the image to 1 megapixel
-      const scaledBlob = await scaleImageTo1Megapixel(file);
-      const url = URL.createObjectURL(scaledBlob);
-
-      // Add initial messages
-      setMessages((prevMessages) => [
-        {
-          type: "image",
-          image: url,
-          imageBlob: scaledBlob,
-          from: "assistant",
-          id: Date.now(),
-        },
-        {
-          type: "text",
-          text: "Image uploaded! How would you like to edit it?",
-          from: "system",
-          id: Date.now() + 1,
-        },
-      ]);
-
-      // Switch to chat mode
-      setShowUpload(false);
-    } catch (error: any) {
-      alert("Failed to process image: " + error.message);
-    }
-  }
-
-  // Handle click on starter image
-  async function handleStarterImageClick(starter: {
-    imageUrl: string;
-    suggestedPrompt: string;
-  }) {
-    // Fetch the image as a blob so it behaves like uploaded images
-    try {
-      setLoading(true);
-      const res = await fetch(starter.imageUrl);
-      const blob = await res.blob();
-      // Add image as first message
-      setMessages((prevMessages) => [
-        {
-          type: "image",
-          image: starter.imageUrl,
-          imageBlob: blob,
-          from: "assistant",
-          id: Date.now(),
-        },
-        {
-          type: "text",
-          text: "Image loaded! Tell me how you'd like to edit it.",
-          from: "system",
-          id: Date.now() + 1,
-        },
-      ]);
-      setShowUpload(false);
-      setInput(starter.suggestedPrompt || "");
-      setStarterUsed(true);
-    } catch (err) {
-      alert("Failed to load starter image.");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  // Helper function to convert blob to data URL
-  function blobToDataUrl(blob: Blob): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = reject;
-      reader.readAsDataURL(blob);
-    });
-  }
-
-  // Get the most recent image from the chat
-  function getLastImageBlob(): Blob | null {
-    for (let i = messages.length - 1; i >= 0; i--) {
-      const msg = messages[i];
-      if (msg.type === "image" && msg.imageBlob) {
-        return msg.imageBlob;
-      }
-    }
-    return null;
-  }
-
-  // Scale image function
-  async function scaleImageTo1Megapixel(file: File): Promise<Blob> {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-
-      img.onload = () => {
-        const originalWidth = img.width;
-        const originalHeight = img.height;
-        const originalPixels = originalWidth * originalHeight;
-        const targetPixels = 1000000;
-
-        let newWidth, newHeight;
-
-        if (originalPixels <= targetPixels) {
-          newWidth = originalWidth;
-          newHeight = originalHeight;
-        } else {
-          const scaleFactor = Math.sqrt(targetPixels / originalPixels);
-          newWidth = Math.round(originalWidth * scaleFactor);
-          newHeight = Math.round(originalHeight * scaleFactor);
-        }
-
-        canvas.width = newWidth;
-        canvas.height = newHeight;
-        if (ctx) {
-          // Check if ctx is not null
-          ctx.drawImage(img, 0, 0, newWidth, newHeight);
-        } else {
-          reject(new Error("Failed to get canvas context"));
-          return;
-        }
-
-        canvas.toBlob(
-          (blob) => {
-            if (blob) {
-              resolve(blob);
-            } else {
-              reject(new Error("Failed to create scaled image"));
-            }
-          },
-          "image/jpeg",
-          0.9
-        );
-      };
-
-      img.onerror = () => {
-        reject(new Error("Failed to load image"));
-      };
-
-      img.src = URL.createObjectURL(file);
-    });
-  }
-
-  // Reset to upload mode
-  function resetApp() {
-    if (abortController) {
-      abortController.abort();
-    }
-    setShowUpload(true);
-    setMessages([]);
-    setInput("");
-    setPredictionId(null);
-    setAbortController(null);
-    setLoading(false);
-    setStarterUsed(false);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-  }
-
-  // Handle sending a message
-  const handleSend = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const lastImageBlob = getLastImageBlob();
-    if (!input.trim() || loading || !lastImageBlob) return;
-
-    const userMsg: TextMessage = {
-      type: "text",
-      text: input,
-      from: "user",
-      id: Date.now(),
-    };
-    setMessages((prev) => [...prev, userMsg]);
-    setInput("");
-    setLoading(true);
-
-    // Add loading message
-    const loadingMsg: LoadingMessage = {
-      type: "loading",
-      from: "assistant",
-      id: Date.now() + 1,
-    };
-    setMessages((prev) => [...prev, loadingMsg]);
-
-    try {
-      // Create abort controller for this request
-      const controller = new AbortController();
-      setAbortController(controller);
-
-      // Convert blob to data URL for the API
-      console.log("Converting blob to data URL...");
-      const imageDataUrl = await blobToDataUrl(lastImageBlob);
-      console.log("Image data URL length:", imageDataUrl.length);
-
-      console.log("Sending request to /generate-image...");
-      const requestBody = {
-        prompt: input,
-        input_image: imageDataUrl,
-      };
-      console.log("Request body size:", JSON.stringify(requestBody).length);
-
-      const res = await fetch("/api/generate-image", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(requestBody),
-        signal: controller.signal,
-      });
-
-      console.log("Response status:", res.status);
-      console.log(
-        "Response headers:",
-        Object.fromEntries(res.headers.entries())
-      );
-
-      if (!res.ok) {
-        const errorText = await res.text();
-        console.error("Error response body:", errorText);
-        throw new Error(`HTTP ${res.status}: ${errorText}`);
-      }
-
-      // The response is now JSON with the Cloudflare Images URL
-      const result = await res.json();
-      console.log("Response result:", result);
-
-      if (result.error) {
-        throw new Error(result.error);
-      }
-
-      const imageUrl = result.imageUrl;
-      console.log("Cloudflare Images URL:", imageUrl);
-
-      // Fetch the image to create a blob for local storage/UI purposes
-      const imageResponse = await fetch(imageUrl);
-      const imageBlob = await imageResponse.blob();
-      console.log("Image blob size:", imageBlob.size);
-
-      // Replace loading with image (store blob in message)
-      setMessages((prev) =>
-        prev.map((msg) =>
-          msg.type === "loading"
-            ? {
-                type: "image",
-                image: imageUrl,
-                imageBlob: imageBlob,
-                from: "assistant",
-                id: msg.id,
-              }
-            : msg
-        )
-      );
-
-      // Add delete button to user message
-      setMessages((prev) =>
-        prev.map((msg) =>
-          msg.id === userMsg.id ? { ...msg, showDelete: true } : msg
-        )
-      );
-    } catch (err: any) {
-      // Don't show error if request was aborted (cancelled)
-      if (err.name !== "AbortError") {
-        setMessages((prev) => prev.filter((msg) => msg.type !== "loading"));
-        setMessages((prev) => [
-          ...prev,
-          {
-            type: "text",
-            text:
-              "Sorry, there was an error generating the image: " + err.message,
-            from: "assistant",
-            id: Date.now(),
-          },
-        ]);
-      } else {
-        console.log("Request was cancelled");
-        setMessages((prev) => prev.filter((msg) => msg.type !== "loading"));
-      }
-    } finally {
-      setLoading(false);
-      setPredictionId(null);
-      setAbortController(null);
-    }
-  };
-
-  // Cancel generation
-  function cancelGeneration() {
-    console.log("Cancel generation called");
-
-    // Abort the ongoing request
-    if (abortController) {
-      console.log("Aborting request...");
-      abortController.abort();
-      setAbortController(null);
-    }
-
-    // Stop loading
-    setLoading(false);
-    setPredictionId(null);
-
-    // Find the most recent user message to restore to input
-    const currentMessages = [...messages];
-    const lastUserMessage = currentMessages
-      .slice()
-      .reverse()
-      .find(
-        (msg): msg is TextMessage => msg.from === "user" && msg.type === "text"
-      );
-    console.log("Last user message:", lastUserMessage);
-
-    // Remove loading message and the most recent user message
-    // This automatically makes the previous image the "last image" again
-    setMessages((prev) => {
-      const filtered = prev.filter(
-        (msg) =>
-          msg.type !== "loading" &&
-          !(
-            lastUserMessage &&
-            msg.from === "user" &&
-            msg.type === "text" &&
-            msg.id === lastUserMessage.id
-          )
-      );
-      console.log("Messages after cancel:", filtered.length);
-      return filtered;
-    });
-
-    // Restore the cancelled message to input
-    if (lastUserMessage) {
-      setTimeout(() => {
-        console.log("Restoring text to input:", lastUserMessage.text);
-        setInput(lastUserMessage.text);
-      }, 50);
-    }
-  }
-
-  // Delete message and all subsequent messages
-  function deleteFromMessage(messageId: number) {
-    const messageIndex = messages.findIndex((msg) => msg.id === messageId);
-    if (messageIndex === -1) return;
-
-    // Keep messages up to the clicked message (excluding it)
-    const remainingMessages = messages.slice(0, messageIndex);
-    setMessages(remainingMessages);
-
-    // No need to set current image - getLastImageBlob will find it automatically
-  }
-
-  // No longer needed - state is derived from chat messages
-
-  // Handle image click for full screen
-  function handleImageClick(imageUrl: string) {
-    window.open(imageUrl, "_blank");
+    // This function can remain as it's called on image load to ensure visibility.
+    // However, it does not rely on chatContainerRef for current UI.
+    // No direct scrolling logic needed for image container as it's centered
   }
 
   // Attach drag events when in upload mode
   useEffect(() => {
     if (showUpload) {
-      // Use window as the target for drag events, and cast event type to DragEvent
       window.addEventListener("dragenter", handleDrag);
       window.addEventListener("dragover", handleDrag);
       window.addEventListener("dragleave", handleDrag);
@@ -533,249 +119,51 @@ function App() {
         window.removeEventListener("drop", handleDrop);
       };
     }
-  }, [showUpload]);
+  }, [showUpload, handleDrag, handleDrop]);
+
+  // Handle click on an image in the left history panel
+  const handleLeftImageClick = (image: ImageMessage) => {
+    setSelectedImage(image);
+  };
 
   return (
-    <div className="bg-gradient-to-br from-[#e04f0c] to-[#f47020] md:overflow-auto overflow-hidden">
+    <div className="from-[#e04f0c] to-[#f47020] md:overflow-auto overflow-hidden flex flex-col">
       {/* Main Content */}
-      <div className="flex flex-col md:flex md:items-center">
+      <div className="flex flex-1 md:flex md:items-center">
         {showUpload ? (
-          /* Upload Section */
-          <div className="w-full md:max-w-4xl bg-white md:shadow-md flex flex-col overflow-hidden md:overflow-visible">
-            {/* Upload Area */}
-            <div
-              className={`border-2 border-dashed rounded-2xl p-6 md:p-12 text-center cursor-pointer mb-12 ${
-                dragActive
-                  ? "border-green-400 bg-green-50 text-green-700"
-                  : "border-gray-300 bg-gray-50 hover:border-orange-400 hover:bg-orange-50 text-gray-700 hover:text-orange-700"
-              }`}
-              onClick={() => fileInputRef.current?.click()}
-            >
-              <div className="upload-content">
-                <svg
-                  className="w-10 h-10 md:w-12 md:h-12 mx-auto mb-3 md:mb-4 opacity-70"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                  ></path>
-                </svg>
-                <h3 className="text-lg md:text-xl mb-1 md:mb-2 font-semibold">
-                  Upload an image to get started
-                </h3>
-                <p className="text-base md:text-lg opacity-80">
-                  Drag and drop an image here, or click to browse
-                </p>
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleFileSelect}
-                />
-              </div>
-            </div>
-
-            {/* Starter Images Section */}
-            <div className="text-center text-gray-600 text-base mb-4 font-medium">
-              Or choose a starting image:
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-              {starterImages.map((starter, idx) => (
-                <button
-                  key={idx}
-                  className="aspect-square w-full rounded-xl overflow-hidden border-2 border-gray-200 hover:border-orange-400 focus:border-orange-500 transition-all shadow-sm bg-gray-50 group"
-                  onClick={() => handleStarterImageClick(starter)}
-                  disabled={loading}
-                  title={starter.suggestedPrompt}
-                >
-                  <img
-                    src={starter.imageUrl}
-                    alt={starter.suggestedPrompt}
-                    className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-200"
-                  />
-                </button>
-              ))}
-            </div>
-          </div>
+          <UploadSection
+            dragActive={dragActive}
+            handleDrag={handleDrag}
+            handleDrop={handleDrop}
+            fileInputRef={fileInputRef}
+            handleFileSelect={handleFileSelect}
+            starterImages={starterImages}
+            handleStarterImageClick={handleStarterImageClick}
+            loading={loading}
+          />
         ) : (
-          /* Chat Section */
-          <div className="w-full md:max-w-4xl bg-white md:shadow-md overflow-hidden flex flex-col relative">
-            {/* Chat Header with Logo */}
-            <div className="p-4 md:p-2 bg-white border-b border-gray-200 relative flex items-center flex-shrink-0">
-              <button
-                onClick={resetApp}
-                className="absolute left-4 w-8 h-8 bg-orange-500 hover:bg-orange-600 text-white rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105"
-                title="Back to upload"
-              >
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M10 19l-7-7m0 0l7-7m-7 7h18"
-                  ></path>
-                </svg>
-              </button>
-            </div>
-
-            {/* Chat Messages */}
-            <div
-              className="flex-1 overflow-y-auto p-6 space-y-4 pb-56 md:pb-6"
-              ref={chatContainerRef}
-            >
-              {messages.map((msg) => (
-                <div
-                  key={msg.id}
-                  className={`flex ${
-                    msg.from === "user" ? "justify-end" : "justify-start"
-                  }`}
-                >
-                  <div
-                    className={`relative max-w-sm md:max-w-md ${
-                      msg.from === "user"
-                        ? "bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-3xl px-4 py-3"
-                        : msg.from === "system"
-                        ? "bg-blue-50 text-blue-800 rounded-2xl px-4 py-3 italic"
-                        : "bg-gray-100 text-gray-800 rounded-2xl rounded-bl-md px-4 py-3"
-                    }`}
-                  >
-                    {msg.type === "image" && (
-                      <img
-                        src={msg.image}
-                        alt="Generated image"
-                        className="max-w-xs rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
-                        onClick={() => handleImageClick(msg.image)}
-                        onLoad={scrollToBottom}
-                      />
-                    )}
-                    {msg.type === "loading" && (
-                      <div className="flex flex-col items-center gap-4 py-8 px-12">
-                        <div className="w-16 h-16 border-4 border-gray-300 border-t-orange-500 rounded-full animate-spin"></div>
-                        <span className="text-gray-600">
-                          Generating image...
-                        </span>
-                      </div>
-                    )}
-                    {msg.type === "text" && (
-                      <div className="text-base md:text-lg">{msg.text}</div>
-                    )}
-
-                    {/* Delete button for user messages */}
-                    {msg.type !== "loading" && msg.showDelete && (
-                      <button
-                        onClick={() => deleteFromMessage(msg.id)}
-                        className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110"
-                        title="Delete from here and continue editing"
-                      >
-                        <svg
-                          className="w-3 h-3"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                          ></path>
-                        </svg>
-                      </button>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Input Area */}
-            <div
-              className="fixed bottom-0 left-0 right-0 bg-white border-t p-4 md:relative md:border-t"
-              style={{
-                paddingBottom: "calc(1rem + env(safe-area-inset-bottom))",
-              }}
-            >
-              <form
-                onSubmit={handleSend}
-                className="flex items-end gap-3 max-w-4xl mx-auto"
-              >
-                <div className="flex-1 relative">
-                  <div className="bg-gray-50 rounded-3xl px-4 py-3 pr-12 border-2 border-transparent focus-within:border-orange-500 transition-colors">
-                    <textarea
-                      value={input}
-                      onChange={(e) => setInput(e.target.value)}
-                      placeholder="Describe your edit..."
-                      className="w-full bg-transparent border-none outline-none resize-none text-base"
-                      rows={1}
-                      style={{ minHeight: "24px", maxHeight: "120px" }}
-                      disabled={loading}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" && !e.shiftKey) {
-                          e.preventDefault();
-                          if (!loading && input.trim()) {
-                            handleSend(e);
-                          }
-                        }
-                      }}
-                    />
-
-                    {/* Send/Cancel Button */}
-                    {loading ? (
-                      <button
-                        type="button"
-                        onClick={cancelGeneration}
-                        className="absolute right-2 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center transition-all duration-200"
-                      >
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M6 18L18 6M6 6l12 12"
-                          ></path>
-                        </svg>
-                      </button>
-                    ) : (
-                      <button
-                        type="submit"
-                        disabled={!input.trim() || loading}
-                        className="absolute right-2 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-orange-500 hover:bg-orange-600 disabled:bg-gray-300 text-white rounded-full flex items-center justify-center transition-all duration-200 disabled:cursor-not-allowed"
-                      >
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-                          ></path>
-                        </svg>
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
+          <ChatSection
+            imageVersions={imageVersions}
+            selectedImage={selectedImage}
+            handleLeftImageClick={handleLeftImageClick}
+            hoveredImageId={hoveredImageId}
+            setHoveredImageId={setHoveredImageId}
+            handleDownloadImage={handleDownloadImage}
+            handleCopyImage={handleCopyImage}
+            loading={loading}
+            handleImageClick={handleImageClick}
+            scrollToBottom={scrollToBottom}
+            input={input}
+            setInput={setInput}
+            handleSend={handleSend}
+            cancelGeneration={cancelGeneration}
+            setMessages={setMessages}
+            setImageVersions={setImageVersions}
+            setSelectedImage={setSelectedImage}
+            setShowUpload={setShowUpload}
+            setStarterUsed={setStarterUsed}
+            setLoading={setLoading}
+          />
         )}
       </div>
     </div>

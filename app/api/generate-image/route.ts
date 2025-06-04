@@ -19,6 +19,7 @@ export async function POST(request: Request) {
     const replicateImageUrl = output.url()
 
     return Response.json({ imageUrl: replicateImageUrl });
+    // return Response.json({ imageUrl: 'https://replicate.delivery/xezq/goJREVtqfETNfkJX6yRFP7GcOO4tZRelwPqDO2voZLfo5IOTB/tmpk9ej3wmf.jpg' });
   } catch (error: unknown) {
     console.error('Error in generate-image:', error);
     const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
