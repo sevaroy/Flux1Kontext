@@ -1,3 +1,5 @@
+![Flux Kontext](https://pub-d5e0d3c6480d4602a6c19db77e050e13.r2.dev/readme.png)
+
 # Flux Kontext Image Generator
 
 This project is an advanced AI image generation tool that combines text understanding and visual design to automatically generate high-quality images suitable for your input context, all powered by the cutting-edge Flux.1 Kontext AI. We are committed to providing you with a powerful, intuitive creative platform that helps you easily realize your visual ideas.
