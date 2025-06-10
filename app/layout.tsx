@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
+import AuthProvider from "@/components/AuthProvider";
+import { UserProvider } from "@/context/UserContext";
 
 export const metadata: Metadata = {
   title:
@@ -20,13 +22,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         {/* <link rel="icon" type="image/svg+xml" href="/favicon.svg" /> */}
       </head>
-      <body>
-        {children}
-        {process.env.NODE_ENV === "production" && <GoogleAnalytics />}
+      <body suppressHydrationWarning>
+        <AuthProvider>
+          <UserProvider>
+            {children}
+            {process.env.NODE_ENV === "production" && <GoogleAnalytics />}
+          </UserProvider>
+        </AuthProvider>
       </body>
     </html>
   );
