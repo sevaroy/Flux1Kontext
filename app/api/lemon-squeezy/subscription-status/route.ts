@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
   const email = searchParams.get("email");
   
   // 验证用户身份
-  const token = await getToken({ req: request as any });
+  const token = await getToken({ req: request });
   
   // 如果没有提供邮箱或未认证，返回错误
   if (!email) {

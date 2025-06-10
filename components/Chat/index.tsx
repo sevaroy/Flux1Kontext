@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import UploadSection from "./UploadSection";
 import ChatSection from "./ChatSection";
-import { ImageMessage, TextMessage, LoadingMessage, Message } from "./types";
+import { ImageMessage } from "./types";
 import { useImageUpload } from "./hooks/useImageUpload";
 import { useChatCore } from "./hooks/useChatCore";
 import { useImageActions } from "./hooks/useImageActions";
@@ -41,14 +41,13 @@ const starterImages = [
 
 function App() {
   const [showUpload, setShowUpload] = useState(true);
-  const [starterUsed, setStarterUsed] = useState(false);
+  const [, setStarterUsed] = useState(false);
   const [hoveredImageId, setHoveredImageId] = useState<number | null>(null);
 
   const isDesktop = useDesktopDetection();
   useBodyScrollLock(isDesktop);
 
   const {
-    messages,
     setMessages,
     input,
     setInput,
@@ -60,7 +59,6 @@ function App() {
     setSelectedImage,
     handleSend,
     cancelGeneration,
-    resetAll: resetChatCore,
   } = useChatCore();
 
   const {
@@ -70,7 +68,6 @@ function App() {
     handleDrag,
     handleDrop,
     dragActive,
-    resetFileInput,
   } = useImageUpload({
     setMessages,
     setImageVersions,
@@ -81,22 +78,7 @@ function App() {
     setLoading,
   });
 
-  const { handleImageClick, handleDownloadImage, handleCopyImage } =
-    useImageActions();
-
-  // Combined reset function for App component specific states
-  const resetAppState = () => {
-    setShowUpload(true);
-    setStarterUsed(false);
-    setHoveredImageId(null);
-    resetFileInput(); // Reset the file input field
-  };
-
-  // Override the resetAll from useChatCore to include app state reset
-  const fullReset = () => {
-    resetChatCore(); // Resets all states managed by useChatCore
-    resetAppState(); // Resets states managed by App component
-  };
+  const { handleImageClick, handleDownloadImage } = useImageActions();
 
   // Helper to scroll to bottom (for image onLoad)
   function scrollToBottom() {
@@ -149,7 +131,6 @@ function App() {
             hoveredImageId={hoveredImageId}
             setHoveredImageId={setHoveredImageId}
             handleDownloadImage={handleDownloadImage}
-            handleCopyImage={handleCopyImage}
             loading={loading}
             handleImageClick={handleImageClick}
             scrollToBottom={scrollToBottom}

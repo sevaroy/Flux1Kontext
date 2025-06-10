@@ -64,7 +64,7 @@ export default function FAQPage() {
                 How to ensure AI understands my editing needs?
               </h2>
               <p className="text-gray-700">
-                AI's understanding depends on the text description you provide.
+                AI&apos;s understanding depends on the text description you provide.
                 Please be as specific and clear as possible when describing your
                 editing requirements, including the objects to be modified,
                 desired effects, styles, etc. If the first attempt is not ideal,

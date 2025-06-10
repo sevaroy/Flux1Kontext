@@ -9,7 +9,6 @@ interface ImageHistoryPanelProps {
   hoveredImageId: number | null;
   setHoveredImageId: React.Dispatch<React.SetStateAction<number | null>>;
   handleDownloadImage: (image: ImageMessage) => void;
-  handleCopyImage: (image: ImageMessage) => Promise<void>;
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
   setImageVersions: React.Dispatch<React.SetStateAction<ImageMessage[]>>;
   setSelectedImage: React.Dispatch<React.SetStateAction<ImageMessage | null>>;
@@ -26,7 +25,6 @@ const ImageHistoryPanel: React.FC<ImageHistoryPanelProps> = ({
   hoveredImageId,
   setHoveredImageId,
   handleDownloadImage,
-  handleCopyImage,
   setMessages,
   setImageVersions,
   setSelectedImage,
@@ -119,28 +117,6 @@ const ImageHistoryPanel: React.FC<ImageHistoryPanelProps> = ({
                         ></path>
                       </svg>
                     </button>
-                    {/* <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleCopyImage(img);
-                      }}
-                      className="w-8 h-8 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-full flex items-center justify-center transition-colors duration-200"
-                      title="Copy image"
-                    >
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m-4 5h-2M9 13v-1h2v1m-2-1h2v1m-2-1h2v1"
-                        ></path>
-                      </svg>
-                    </button> */}
                   </div>
                 ) : (
                   <div className="flex flex-col items-end pr-2">

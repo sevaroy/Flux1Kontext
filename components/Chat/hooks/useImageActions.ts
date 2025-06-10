@@ -43,7 +43,7 @@ export const useImageActions = () => {
         console.log("Image copied successfully using ClipboardItem!");
         setShowCopySuccess(true);
         setTimeout(() => setShowCopySuccess(false), 2000);
-      } catch (err: any) {
+      } catch (err) {
         console.warn(
           "Direct ClipboardItem write failed, attempting canvas fallback:",
           err
