@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 
 interface UploadSectionProps {
   dragActive: boolean;
@@ -37,6 +37,7 @@ const UploadSection: React.FC<UploadSectionProps> = ({
         <input
           type="file"
           id="image-upload"
+          ref={fileInputRef}
           accept="image/*"
           className="hidden"
           onChange={handleFileSelect}

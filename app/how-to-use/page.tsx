@@ -37,7 +37,7 @@ export default function HowToUsePage() {
                 Step One: Upload Your Image
               </h2>
               <p className="text-gray-700 mb-4">
-                Click the "Upload Image" button on the page, or drag and drop
+                  Click the &quot;Upload Image&quot; button on the page, or drag and drop
                 your image file into the designated area. We support various
                 common image formats.
               </p>
@@ -54,9 +54,9 @@ export default function HowToUsePage() {
               <p className="text-gray-700 mb-4">
                 After uploading the image, you will enter the chat interface. In
                 the chatbox, clearly describe the edits you want to make to the
-                image. For example: "Please blur the background." "Change the
-                red car in the picture to blue." "Add a pair of sunglasses to
-                this person."
+                image. For example: &quot;Please blur the background.&quot; &quot;Change the
+                red car in the picture to blue.&quot; &quot;Add a pair of sunglasses to
+                this person.&quot;
               </p>
               <div className="bg-gray-100 p-4 rounded-lg text-sm text-gray-600">
                 Tip: The more specific your description, the more accurately AI
@@ -88,16 +88,16 @@ export default function HowToUsePage() {
               </h2>
               <ul className="list-disc list-inside text-gray-700 space-y-2">
                 <li>
-                  Try sequential instructions, e.g., "First remove the
-                  background, then place the person on the beach."
+                  Try sequential instructions, e.g., &quot;First remove the
+                  background, then place the person on the beach.&quot;
                 </li>
                 <li>
-                  Correct AI's understanding, e.g., "No, I meant the person on
-                  the right."
+                  Correct AI&apos;s understanding, e.g., &quot;No, I meant the person on
+                  the right.&quot;
                 </li>
                 <li>
-                  Explore different styles of editing requests, e.g., "Make this
-                  photo look like an oil painting."
+                  Explore different styles of editing requests, e.g., &quot;Make this
+                  photo look like an oil painting.&quot;
                 </li>
               </ul>
             </section>

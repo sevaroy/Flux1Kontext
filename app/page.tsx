@@ -29,7 +29,7 @@ export default function Home() {
               What can Flux Kontext Smart Image Editor do for you?
             </h2>
             <p className="mb-6 text-gray-700">
-              Whether you're a designer, marketer, content creator, or a general
+              Whether you&apos;re a designer, marketer, content creator, or a general
               user, Flux Kontext Smart Image Editor can help you. From simple
               touch-ups to complex element replacements, our AI tool can quickly
               and accurately edit images according to your instructions, giving

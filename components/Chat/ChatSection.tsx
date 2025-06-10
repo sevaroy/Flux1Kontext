@@ -11,7 +11,6 @@ interface ChatSectionProps {
   hoveredImageId: number | null;
   setHoveredImageId: React.Dispatch<React.SetStateAction<number | null>>;
   handleDownloadImage: (image: ImageMessage) => void;
-  handleCopyImage: (image: ImageMessage) => Promise<void>;
   loading: boolean;
   handleImageClick: (imageUrl: string) => void;
   scrollToBottom: () => void;
@@ -34,7 +33,6 @@ const ChatSection: React.FC<ChatSectionProps> = ({
   hoveredImageId,
   setHoveredImageId,
   handleDownloadImage,
-  handleCopyImage,
   loading,
   handleImageClick,
   scrollToBottom,
@@ -59,7 +57,6 @@ const ChatSection: React.FC<ChatSectionProps> = ({
         hoveredImageId={hoveredImageId}
         setHoveredImageId={setHoveredImageId}
         handleDownloadImage={handleDownloadImage}
-        handleCopyImage={handleCopyImage}
         setMessages={setMessages}
         setImageVersions={setImageVersions}
         setSelectedImage={setSelectedImage}

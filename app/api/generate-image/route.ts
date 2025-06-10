@@ -17,8 +17,11 @@ export async function POST(request: Request) {
       safety_tolerance: 2
     };
 
-    const output: any = await replicate.run("black-forest-labs/flux-kontext-pro", { input });
-    const replicateImageUrl = output.url()
+  const output = (await replicate.run(
+    "black-forest-labs/flux-kontext-pro",
+    { input }
+  )) as { url: () => string };
+  const replicateImageUrl = output.url();
 
     return Response.json({ imageUrl: replicateImageUrl });
     // return Response.json({ imageUrl: 'https://replicate.delivery/xezq/goJREVtqfETNfkJX6yRFP7GcOO4tZRelwPqDO2voZLfo5IOTB/tmpk9ej3wmf.jpg' });

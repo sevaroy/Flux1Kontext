@@ -120,15 +120,16 @@ export const useChatCore = () => {
 
       setImageVersions((prev) => [...prev, generatedImageMsg]);
       setSelectedImage(generatedImageMsg);
-    } catch (err: any) {
-      if (err.name !== "AbortError") {
+    } catch (err) {
+      const error = err as Error;
+      if (error.name !== "AbortError") {
         setMessages((prev) => prev.filter((msg) => msg.type !== "loading"));
         setMessages((prev) => [
           ...prev,
           {
             type: "text",
             text:
-              "Sorry, there was an error generating the image: " + err.message,
+              "Sorry, there was an error generating the image: " + error.message,
             from: "assistant",
             id: Date.now(),
           },

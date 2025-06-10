@@ -69,8 +69,8 @@ export const useImageUpload = ({
       setSelectedImage(newImageMsg);
 
       setShowUpload(false);
-    } catch (error: any) {
-      alert("Failed to process image: " + error.message);
+    } catch (error) {
+      alert("Failed to process image: " + (error as Error).message);
     }
   };
 
@@ -121,7 +121,7 @@ export const useImageUpload = ({
       setShowUpload(false);
       setInput(starter.suggestedPrompt || "");
       setStarterUsed(true);
-    } catch (err) {
+    } catch {
       alert("Failed to load starter image.");
     } finally {
       setLoading(false);
@@ -129,7 +129,7 @@ export const useImageUpload = ({
   };
 
   // Drag and drop handlers for upload area
-  const handleDrag = (e: DragEvent) => {
+  const handleDrag = (e: DragEvent | React.DragEvent<HTMLElement>) => {
     e.preventDefault();
     e.stopPropagation();
     if (e.type === "dragenter" || e.type === "dragover") {
@@ -139,7 +139,7 @@ export const useImageUpload = ({
     }
   };
 
-  const handleDrop = (e: DragEvent) => {
+  const handleDrop = (e: DragEvent | React.DragEvent<HTMLElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
